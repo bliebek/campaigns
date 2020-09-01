@@ -1,7 +1,15 @@
 import React from 'react';
 import './app.css';
 
-export default () => (<div className={'c-app'}>
-    <div className={'c-app__sidebar'}></div>
-    <div className={'c-app__content'}></div>
-</div>);
+import DataProvider from './../service/campaigns/data-provider';
+import Loader from './loader';
+
+export default () => {
+
+    return (<div className={'c-app'}>
+        <DataProvider />
+        <Loader />
+        <div className={'c-app__sidebar'}></div>
+        <div className={'c-app__content'}></div>
+    </div>);
+}

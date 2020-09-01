@@ -9,9 +9,4 @@ import { rootSaga } from './service/root-reducer';
 
 sagaMiddleware.run(rootSaga);
 
-ReactDOM.render(
-    <React.StrictMode>
-        <Provider store={store}><App /></Provider>
-    </React.StrictMode>,
-    document.getElementById("root")
-);
+ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById("root"));

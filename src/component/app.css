@@ -5,6 +5,7 @@
     height: 200px;
     margin: 24px;
     padding: 24px;
+    position: relative;
 }
 
 @media (min-width: 768px) {
