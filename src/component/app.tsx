@@ -3,6 +3,7 @@ import './app.css';
 
 import DataProvider from './../service/campaigns/data-provider';
 import Loader from './loader';
+import Chart from './chart';
 
 export default () => {
 
@@ -10,6 +11,8 @@ export default () => {
         <DataProvider />
         <Loader />
         <div className={'c-app__sidebar'}></div>
-        <div className={'c-app__content'}></div>
+        <div className={'c-app__content'}>
+            <Chart />
+        </div>
     </div>);
 }
