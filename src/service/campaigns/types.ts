@@ -8,6 +8,10 @@ export interface Campaign {
 
 export interface CampaignsState {
     data: Campaign[],
+    campaigns: string[],
+    sources: string[],
+    selectedCampaigns: string[],
+    selectedSources: string[],
     loading: boolean,
     error?: Error
 }

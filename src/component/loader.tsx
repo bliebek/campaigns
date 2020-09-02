@@ -6,5 +6,5 @@ import './loader.css';
 export default () => {
     const isLoading = useSelector(loading);
 
-    return isLoading ? <div className={'c-loader'}></div> : null;
+    return isLoading ? <div className={'c-loader'}><span>Loading data...</span></div> : null;
 }

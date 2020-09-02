@@ -1,0 +1,26 @@
+.c-filter__title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+}
+
+.c-filter__section {
+    display: flex;
+    font-size: 13px;
+    height: 26px;
+    line-height: 26px;
+    margin-bottom: 12px;
+}
+
+.c-filter__section label {
+    font-weight: bold;
+    min-width: 90px;
+}
+
+.c-filter__section label:after {
+    content: ':'
+}
+
+.c-filter__section .rc-select {
+
+}

@@ -1,25 +1,8 @@
 .c-app {
-    border: solid 1px red;
-    display: flex;
-    flex-direction: column;
-    height: 200px;
+    background: #fff;
+    border-radius: 8px;
     margin: 24px;
+    overflow: hidden;
     padding: 24px;
     position: relative;
-}
-
-@media (min-width: 768px) {
-    .c-app {
-        flex-direction: row;
-    }
-}
-
-.c-app__sidebar {
-    border: solid 1px green;
-    flex: 1;
-}
-
-.c-app__content {
-    border: solid 1px blue;
-    flex: 3;
 }
