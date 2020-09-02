@@ -3,10 +3,11 @@ import { CartesianGrid, Legend, LineChart, Line, ResponsiveContainer, Tooltip, X
 import { useDispatch, useSelector } from 'react-redux';
 import { getCampaignsData } from './../../service/campaigns-data/actions';
 import { data, selectedCampaigns, selectedSources, loading } from './../../service/campaigns-data/selectors';
-import { CampaignRow } from './../../service/campaigns-data/types';
+import { CampaignRow, CampaignRowSimple } from './../../service/campaigns-data/types';
 import config from './../../config';
 import Loader from '../loader/loader';
-import strategies from './../../helper/strategy';
+import sumBy from 'lodash/sumBy';
+import uniqBy from 'lodash/uniqBy';
 
 import './chart.css';
 
@@ -20,23 +21,23 @@ const calculatePoints = (points:CampaignRow[], sources:string[], campaigns:strin
     if (campaigns.length) {
         pointsToDisplay = pointsToDisplay.filter((r:CampaignRow) => campaigns.indexOf(r.Campaign) > -1);
     }
-    const modulo = Math.ceil(pointsToDisplay.length / config.chart.points);
 
-    /**
-     * Change strategy type to see differences in data rendering.
-     * Allowed types are: naive, forward, backward, middle.
-     *
-     * @see src/helper/strategy.ts for strategy descriptions
-     */
-    return strategies.middle(pointsToDisplay, modulo);
+    return uniqBy(pointsToDisplay, 'Date')
+        .map((r:CampaignRow) => ({
+            Date: r.Date,
+            Clicks: sumBy(pointsToDisplay
+                .filter((s:CampaignRow) => s.Date === r.Date), 'Clicks'),
+            Impressions: sumBy(pointsToDisplay
+                .filter((s:CampaignRow) => s.Date === r.Date), 'Impressions')
+        }));
 };
 
-const calculateTicks = (pointsToDisplay:CampaignRow[], ticks:number) => {
+const calculateTicks = (pointsToDisplay:CampaignRowSimple[], ticks:number) => {
     const moduloTick = Math.ceil(pointsToDisplay.length / ticks);
 
     return pointsToDisplay
-            .filter((r:CampaignRow, i:number) => !(i%moduloTick) || i === pointsToDisplay.length - 1)
-            .map((r:CampaignRow) => r.Date);
+            .filter((r:CampaignRowSimple, i:number) => !(i%moduloTick) || i === pointsToDisplay.length - 1)
+            .map((r:CampaignRowSimple) => r.Date);
 };
 
 export default () => {
@@ -46,7 +47,7 @@ export default () => {
     const campaigns = useSelector(selectedCampaigns);
     const isLoading = useSelector(loading);
 
-    const pointsToDisplay:CampaignRow[] = calculatePoints(points, sources, campaigns);
+    const pointsToDisplay:CampaignRowSimple[] = calculatePoints(points, sources, campaigns);
     const ticks:string[] = calculateTicks(pointsToDisplay, config.chart.ticks);
 
     useEffect(() => {

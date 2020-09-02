@@ -7,6 +7,7 @@ export function* campaignsDataSaga() {
     try {
         yield put(getCampaignsDataRequest());
         const data = yield call(getData);
+        console.log('PARSED data', data);
         yield put(getCampaignsDataSuccess(data));
     } catch(e) {
         yield put(getCampaignsDataError(e));
