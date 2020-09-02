@@ -2,13 +2,10 @@ import config from './../../config';
 import * as Papa from 'papaparse';
 
 export default async function getData() {
-    let data = await fetch(config.data.source)
-                        .then((response:any) => response.body.getReader().read())
-                        .then((result:any) => (new TextDecoder('utf-8')).decode(result.value));
-
     return new Promise((resolve, reject) => {
         try {
-            Papa.parse(data, {
+            Papa.parse(config.data.source, {
+                download: true,
                 worker: true,
                 header: true,
                 dynamicTyping: true,
