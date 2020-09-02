@@ -1,44 +1,53 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { CartesianGrid, Legend, LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { useSelector } from 'react-redux';
-import { data, selectedCampaigns, selectedSources } from './../../service/campaigns/selectors';
-import { Campaign } from './../../service/campaigns/types';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCampaignsData } from './../../service/campaigns-data/actions';
+import { data, selectedCampaigns, selectedSources, loading } from './../../service/campaigns-data/selectors';
+import { CampaignRow } from './../../service/campaigns-data/types';
 import config from './../../config';
+import Loader from '../loader/loader';
 
 import './chart.css';
 
-const calculatePoints = (points:Campaign[], sources:string[], campaigns:string[]) => {
-    let pointsToDisplay:Campaign[] = points;
+const calculatePoints = (points:CampaignRow[], sources:string[], campaigns:string[]) => {
+    let pointsToDisplay:CampaignRow[] = points;
 
     if (sources.length) {
-        pointsToDisplay = pointsToDisplay.filter((r:Campaign) => sources.indexOf(r.Datasource) > -1);
+        pointsToDisplay = pointsToDisplay.filter((r:CampaignRow) => sources.indexOf(r.Datasource) > -1);
     }
 
     if (campaigns.length) {
-        pointsToDisplay = pointsToDisplay.filter((r:Campaign) => campaigns.indexOf(r.Campaign) > -1);
+        pointsToDisplay = pointsToDisplay.filter((r:CampaignRow) => campaigns.indexOf(r.Campaign) > -1);
     }
     const modulo = Math.ceil(pointsToDisplay.length / config.chart.points);
 
-    return pointsToDisplay.filter((r:Campaign, i:number) => !(i%modulo));
+    return pointsToDisplay.filter((r:CampaignRow, i:number) => !(i%modulo));
 };
 
-const calculateTicks = (pointsToDisplay:Campaign[], ticks:number) => {
+const calculateTicks = (pointsToDisplay:CampaignRow[], ticks:number) => {
     const moduloTick = Math.ceil(pointsToDisplay.length / ticks);
 
     return pointsToDisplay
-            .filter((r:Campaign, i:number) => !(i%moduloTick) || i === pointsToDisplay.length - 1)
-            .map((r:Campaign) => r.Date);
+            .filter((r:CampaignRow, i:number) => !(i%moduloTick) || i === pointsToDisplay.length - 1)
+            .map((r:CampaignRow) => r.Date);
 };
 
 export default () => {
+    const dispatch = useDispatch();
     const points = useSelector(data);
     const sources = useSelector(selectedSources);
     const campaigns = useSelector(selectedCampaigns);
+    const isLoading = useSelector(loading);
 
-    const pointsToDisplay:Campaign[] = calculatePoints(points, sources, campaigns);
+    const pointsToDisplay:CampaignRow[] = calculatePoints(points, sources, campaigns);
     const ticks:string[] = calculateTicks(pointsToDisplay, config.chart.ticks);
 
+    useEffect(() => {
+        dispatch(getCampaignsData())
+    }, [ dispatch ]);
+
     return (<div className={'c-chart'}>
+        { isLoading && <Loader /> }
         { !!(pointsToDisplay.length) && (<div className={'c-chart__container'}>
             <ResponsiveContainer>
                 <LineChart data={pointsToDisplay}>

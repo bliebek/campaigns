@@ -1,8 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Select, { Option } from 'rc-select';
-import { sources, campaigns } from './../../service/campaigns/selectors';
-import { setSelectedSources, setSelectedCampaigns } from './../../service/campaigns/actions';
+import { getSourcesList } from './../../service/datasources/actions';
+import { sources } from './../../service/datasources/selectors';
+import { getCampaignsList } from './../../service/campaigns/actions';
+import { campaigns } from './../../service/campaigns/selectors';
+import { setSelectedSources, setSelectedCampaigns } from './../../service/campaigns-data/actions';
 
 import './filter.css';
 import './rc-select.css';
@@ -13,6 +16,11 @@ export default () => {
     const campaignsList = useSelector(campaigns);
     const onSourcesChange = useCallback((sources:string[]) => dispatch(setSelectedSources(sources)), [ dispatch ]);
     const onCampaignsChange = useCallback((campaigns:string[]) => dispatch(setSelectedCampaigns(campaigns)), [ dispatch ]);
+
+    useEffect(() => {
+        dispatch(getCampaignsList());
+        dispatch(getSourcesList());
+    }, [ dispatch ]);
 
     return (<div className={'c-filter'}>
                 <h1 className={'c-filter__title'}>Filter dimension values</h1>

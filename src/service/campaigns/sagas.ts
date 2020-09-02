@@ -1,18 +1,25 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 
 import getData from './../api/api';
-import { getCampaignsDataRequest, getCampaignsDataSuccess, getCampaignsDataError } from './actions';
+import { getCampaignsListRequest, getCampaignsListSuccess, getCampaignsListError } from './actions';
+import { CampaignRow } from "../campaigns-data/types";
 
-export function* campaignsDataSaga() {
+export function* campaignsListSaga() {
     try {
-        yield put(getCampaignsDataRequest());
+        yield put(getCampaignsListRequest());
         const data = yield call(getData);
-        yield put(getCampaignsDataSuccess(data));
+        const campaigns:Set<string> = new Set();
+
+        data.forEach((r:CampaignRow) => {
+            campaigns.add(r.Campaign);
+        });
+
+        yield put(getCampaignsListSuccess(Array.from(campaigns)));
     } catch(e) {
-        yield put(getCampaignsDataError(e));
+        yield put(getCampaignsListError(e));
     }
 }
 
-export function* campaignsSaga() {
-    yield takeLatest('CAMPAIGNS_DATA', campaignsDataSaga);
+export function* campaignsListSagas() {
+    yield takeLatest('CAMPAIGNS_LIST', campaignsListSaga);
 }
