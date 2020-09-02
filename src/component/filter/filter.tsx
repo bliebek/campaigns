@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Select, { Option } from 'rc-select';
-import { sources, campaigns } from './../service/campaigns/selectors';
-import { setSelectedSources, setSelectedCampaigns } from './../service/campaigns/actions';
+import { sources, campaigns } from './../../service/campaigns/selectors';
+import { setSelectedSources, setSelectedCampaigns } from './../../service/campaigns/actions';
 
 import './filter.css';
 import './rc-select.css';

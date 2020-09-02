@@ -1,16 +1,13 @@
 import React from 'react';
 import { CartesianGrid, Legend, LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { useSelector } from 'react-redux';
-import { data, selectedCampaigns, selectedSources } from './../service/campaigns/selectors';
-import { Campaign } from './../service/campaigns/types';
-import config from './../config';
+import { data, selectedCampaigns, selectedSources } from './../../service/campaigns/selectors';
+import { Campaign } from './../../service/campaigns/types';
+import config from './../../config';
 
 import './chart.css';
 
-export default () => {
-    const points = useSelector(data);
-    const sources = useSelector(selectedSources);
-    const campaigns = useSelector(selectedCampaigns);
+const calculatePoints = (points:Campaign[], sources:string[], campaigns:string[]) => {
     let pointsToDisplay:Campaign[] = points;
 
     if (sources.length) {
@@ -20,18 +17,26 @@ export default () => {
     if (campaigns.length) {
         pointsToDisplay = pointsToDisplay.filter((r:Campaign) => campaigns.indexOf(r.Campaign) > -1);
     }
-    // console.log('PPP1', sources, campaigns, pointsToDisplay.length);
     const modulo = Math.ceil(pointsToDisplay.length / config.chart.points);
 
-    pointsToDisplay = pointsToDisplay
-                        .filter((r:Campaign, i:number) => !(i%modulo));
+    return pointsToDisplay.filter((r:Campaign, i:number) => !(i%modulo));
+};
 
-    const moduloTick = Math.ceil(pointsToDisplay.length / config.chart.ticks);
-    let ticks:string[] = pointsToDisplay
-                            .filter((r:Campaign, i:number) => !(i%moduloTick) || i === pointsToDisplay.length - 1)
-                            .map((r:Campaign) => r.Date);
+const calculateTicks = (pointsToDisplay:Campaign[], ticks:number) => {
+    const moduloTick = Math.ceil(pointsToDisplay.length / ticks);
 
-    // console.log('PPP2', modulo, pointsToDisplay, pointsToDisplay.length);
+    return pointsToDisplay
+            .filter((r:Campaign, i:number) => !(i%moduloTick) || i === pointsToDisplay.length - 1)
+            .map((r:Campaign) => r.Date);
+};
+
+export default () => {
+    const points = useSelector(data);
+    const sources = useSelector(selectedSources);
+    const campaigns = useSelector(selectedCampaigns);
+
+    const pointsToDisplay:Campaign[] = calculatePoints(points, sources, campaigns);
+    const ticks:string[] = calculateTicks(pointsToDisplay, config.chart.ticks);
 
     return (<div className={'c-chart'}>
         { !!(pointsToDisplay.length) && (<div className={'c-chart__container'}>

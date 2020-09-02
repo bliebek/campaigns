@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { loading } from './../service/campaigns/selectors';
+import { loading } from './../../service/campaigns/selectors';
 import './loader.css';
 
 export default () => {
