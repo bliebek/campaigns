@@ -12,4 +12,4 @@ export default () => {
             <Chart />
         </div>
     </div>);
-}
+};

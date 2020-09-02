@@ -6,6 +6,7 @@ import { data, selectedCampaigns, selectedSources, loading } from './../../servi
 import { CampaignRow } from './../../service/campaigns-data/types';
 import config from './../../config';
 import Loader from '../loader/loader';
+import strategies from './../../helper/strategy';
 
 import './chart.css';
 
@@ -21,7 +22,13 @@ const calculatePoints = (points:CampaignRow[], sources:string[], campaigns:strin
     }
     const modulo = Math.ceil(pointsToDisplay.length / config.chart.points);
 
-    return pointsToDisplay.filter((r:CampaignRow, i:number) => !(i%modulo));
+    /**
+     * Change strategy type to see differences in data rendering.
+     * Allowed types are: naive, forward, backward, middle.
+     *
+     * @see src/helper/strategy.ts for strategy descriptions
+     */
+    return strategies.middle(pointsToDisplay, modulo);
 };
 
 const calculateTicks = (pointsToDisplay:CampaignRow[], ticks:number) => {
